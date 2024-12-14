@@ -1,0 +1,40 @@
+class Result {
+
+    /*
+     * Complete the 'findObfuscateMessage' function below.
+     *
+     * The function is expected to return a STRING.
+     * The function accepts STRING message as parameter.
+     */
+
+    public static String findObfuscateMessage(String message) {
+    // Write your code here
+        int n = message.length();
+
+        int j = 0; // The last index of the substring (inclusive!)
+        char least = 'z';
+        char curr = message.charAt(0);
+        for (int i = 1; i < n; i++) {
+            char prev = curr;
+            curr = message.charAt(i);
+            if (curr < prev && curr <= least) {
+                j = i;
+                least = curr;
+            }
+        }
+        for (int i = 0; i < j; i++) {
+            if (message.charAt(i) > least) {
+                String substring = message.substring(i, j + 1);
+                String rotated = rotateRight(substring);
+                return message.substring(0, i) + rotated + message.substring(j + 1);
+            }
+        }
+        return message;
+    }
+    private static String rotateRight(String s) {
+        if (s.length() <= 1) {
+            return s;
+        }
+        return s.charAt(s.length() - 1) + s.substring(0, s.length() - 1);
+    }
+}
