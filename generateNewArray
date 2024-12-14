@@ -1,0 +1,55 @@
+class Result {
+
+    /*
+     * Complete the 'generateNewArray' function below.
+     *
+     * The function is expected to return an INTEGER_ARRAY.
+     * The function accepts following parameters:
+     *  1. INTEGER_ARRAY arr
+     *  2. STRING state
+     *  3. INTEGER m
+     */
+
+    public static List<Integer> generateNewArray(List<Integer> arr, String state, int m) {
+        // Write your code here
+        int n = arr.size();
+        char[] stateArr = state.toCharArray();
+        List<Integer> res = new ArrayList<>();
+
+        // Priority queue (max heap) to find the maximum efficiently for `stateArr[i] == '1'`
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> Integer.compare(b, a));
+        Queue<Integer> updateQueue = new LinkedList<>();
+
+        // Initialize the max heap and update queue
+        for (int i = 0; i < n; i++) {
+            if (stateArr[i] == '1') {
+                maxHeap.offer(arr.get(i)); // Add initial '1' state values to the heap
+                if (i + 1 < n && stateArr[i + 1] == '0') {
+                    updateQueue.offer(i + 1); // Track potential indices to update
+                }
+            }
+        }
+
+        // Perform `m` operations
+        for (int j = 0; j < m; j++) {
+            // Step 1: Get the largest value from the heap
+            res.add(maxHeap.isEmpty() ? Integer.MIN_VALUE : maxHeap.peek());
+
+            // Step 2: Propagate state updates
+            int size = updateQueue.size();
+            for (int k = 0; k < size; k++) {
+                int idx = updateQueue.poll();
+                if (stateArr[idx] == '0' && stateArr[idx - 1] == '1') {
+                    stateArr[idx] = '1'; // Update state
+                    maxHeap.offer(arr.get(idx)); // Add new value to the heap
+                    if (idx + 1 < n && stateArr[idx + 1] == '0') {
+                        updateQueue.offer(idx + 1); // Queue the next potential update
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
+
+}
