@@ -1,0 +1,35 @@
+class Solution {
+    public int maximumSwap(int num) {
+        // Convert the number to a character array for easy manipulation
+        char[] digits = String.valueOf(num).toCharArray();
+
+        // Array to store the index of the largest digit seen so far from the right
+        int[] maxSeen = new int[digits.length];
+        int n = digits.length;
+
+        // Populate maxSeen array
+        maxSeen[n - 1] = n - 1;
+        for (int i = n - 2; i >= 0; i--) {
+            if (digits[i] > digits[maxSeen[i + 1]]) {
+                maxSeen[i] = i;
+            } else {
+                maxSeen[i] = maxSeen[i + 1];
+            }
+        }
+
+        // Find the first digit that can be swapped to maximize the number
+        for (int i = 0; i < n; i++) {
+            int maxIdx = maxSeen[i];
+            if (digits[maxIdx] > digits[i]) {
+                // Swap digits[i] and digits[maxIdx]
+                char temp = digits[i];
+                digits[i] = digits[maxIdx];
+                digits[maxIdx] = temp;
+                break;
+            }
+        }
+
+        // Convert the modified digits back to an integer
+        return Integer.parseInt(new String(digits));
+    }
+}
