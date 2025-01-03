@@ -1,0 +1,37 @@
+class Solution {
+    public int maxTwoEvents(int[][] events) {
+        // the smallest end time first
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+        Arrays.sort(events, (a, b) -> Integer.compare(a[0], b[0]));
+       
+        int sum = 0;
+        int currMax = 0;
+
+        /*
+            [[1,3,2],[2,4,3],[4,5,2]]
+            1)
+                min heap: [3, 2]
+                sum: 2
+            2) 
+                min heap: [3, 2] [4, 3]
+                sum: 3
+            3) 
+                min heap: [4, 3], [5, 2]
+                currMax = 0 or 3 -> 3
+                sum = 3 or 3 + 2 -> 5
+
+        */
+
+        for(int[] event: events) {
+            // we can match them only if end of prev event was before start of the current
+            while(!minHeap.isEmpty() && minHeap.peek()[0] < event[0]) {
+                int[] prevEvent = minHeap.poll();
+                currMax = Math.max(currMax, prevEvent[1]);
+            }
+            minHeap.add(new int[]{event[1], event[2]});
+            sum = Math.max(sum, currMax + event[2]);
+        }
+
+        return sum;
+    }
+}
